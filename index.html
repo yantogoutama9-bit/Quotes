@@ -239,14 +239,19 @@
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
         }
 
+        /* Time Display */
         .time-display {
             position: fixed;
             top: 2rem;
-            right: 2.5rem;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 0.75rem;
+            right: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            z-index: 50;
             font-family: 'Inter', sans-serif;
-            letter-spacing: 1px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
         }
 
         footer {
@@ -288,7 +293,7 @@
 </head>
 <body>
     <div class="midnight-notification" id="midnightNotification">🌙 Hari baru! Quote otomatis diperbarui.</div>
-    <div class="time-display" id="timeDisplay">--:--</div>
+   <div class="time-display" id="timeDisplay">--:--:--</div>
     <div id="bgContainer"></div>
     <div class="particles" id="particles"></div>
 
