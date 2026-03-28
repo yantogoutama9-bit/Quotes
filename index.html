@@ -1,0 +1,463 @@
+<!-- FILE 1: index.html - Tampilan Bersih untuk Pengunjung -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotes by Yanto Goutama</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+        }
+
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            transition: opacity 1.2s ease-in-out;
+            opacity: 0;
+        }
+        .bg-layer.active { opacity: 1; }
+
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite linear;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+        }
+
+        .midnight-notification {
+            position: fixed;
+            top: 2rem; left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a1a2e;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(10px);
+        }
+        .midnight-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        header {
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+            opacity: 0;
+            animation: fadeInDown 1s ease forwards;
+        }
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            margin-top: 0.8rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeInDown 1s ease 0.3s forwards;
+        }
+
+        main {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+        .quote-container {
+            max-width: 850px;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+        .day-indicator {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            padding: 0.6rem 2rem;
+            border-radius: 50px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            margin-bottom: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .quote-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+            line-height: 1.7;
+            color: #ffffff;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.3);
+            position: relative;
+            padding: 0 2rem;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .quote-text::before {
+            content: '"';
+            font-size: 6rem;
+            position: absolute;
+            left: 0;
+            top: -2rem;
+            color: rgba(255, 255, 255, 0.15);
+            font-family: 'Playfair Display', serif;
+            line-height: 1;
+        }
+        .quote-author {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            font-style: italic;
+            letter-spacing: 1px;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.8s forwards;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2.5rem;
+            margin-top: 4rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 1.3rem;
+        }
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .nav-btn:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .day-counter {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            min-width: 80px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .progress-container {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%; height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 100;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.9));
+            transition: width 0.6s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .day-selector {
+            position: fixed;
+            right: 2.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            z-index: 50;
+        }
+        .day-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .day-dot:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(1.8);
+        }
+        .day-dot.active {
+            background: white;
+            transform: scale(2);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+        }
+
+        .time-display {
+            position: fixed;
+            top: 2rem;
+            right: 2.5rem;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.75rem;
+            text-align: center;
+            z-index: 50;
+        }
+
+        @keyframes fadeInDown {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(-20px); }
+        }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(30px); }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+            from { opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 2rem; letter-spacing: 2px; }
+            .subtitle { font-size: 0.75rem; letter-spacing: 2px; }
+            .day-selector { right: 1.2rem; gap: 0.4rem; }
+            .day-dot { width: 5px; height: 5px; }
+            .quote-text::before { font-size: 4rem; left: -0.5rem; top: -1rem; }
+            .navigation { gap: 1.5rem; margin-top: 3rem; }
+            .nav-btn { width: 45px; height: 45px; }
+            .time-display { top: 1.5rem; right: 1.5rem; }
+            footer { bottom: 1.5rem; width: 90%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="midnight-notification" id="midnightNotification">🌙 Hari baru! Quote otomatis diperbarui.</div>
+    <div class="time-display" id="timeDisplay">--:--</div>
+    <div id="bgContainer"></div>
+    <div class="particles" id="particles"></div>
+
+    <header>
+        <h1 class="logo">Quotes by Yanto Goutama</h1>
+        <p class="subtitle">Refleksi Harian untuk Hidup yang Lebih Bermakna</p>
+    </header>
+
+    <main>
+        <div class="quote-container">
+            <div class="day-indicator" id="dayIndicator">Hari 1</div>
+            <blockquote class="quote-text" id="quoteText"></blockquote>
+            <cite class="quote-author">— Yanto Goutama</cite>
+            
+            <div class="navigation">
+                <button class="nav-btn" onclick="changeDay(-1)" id="prevBtn">‹</button>
+                <span class="day-counter" id="dayCounter">1 / 30</span>
+                <button class="nav-btn" onclick="changeDay(1)" id="nextBtn">›</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="day-selector" id="daySelector"></div>
+    
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <footer>© 2026 Yanto Goutama</footer>
+
+    <script>
+        // Data akan di-load dari localStorage (di-set oleh admin.html)
+        let quotes = [];
+        let gradients = [];
+        let currentDay = 1;
+        let lastDate = null;
+
+        const defaultQuotes = ["Perubahan besar selalu dimulai dari hati yang mau jujur pada dirinya sendiri.","Tidak semua yang benar itu nyaman, tapi semua yang benar selalu membawa damai.","Kekuatan sejati terlihat saat seseorang memilih tetap lembut di tengah kerasnya hidup.","Hidup bukan soal siapa yang paling cepat, tapi siapa yang tetap setia di jalannya.","Hati yang bersih lebih berharga daripada citra yang terlihat sempurna.","Kesalahan tidak menghancurkan hidupmu—yang menghancurkan adalah menolak untuk berubah.","Damai bukan datang dari keadaan yang tenang, tapi dari hati yang tertata.","Percaya bukan berarti melihat jalan, tapi tetap melangkah meski belum jelas.","Orang yang kuat bukan yang tidak pernah jatuh, tapi yang selalu bangkit dengan arah yang benar.","Kesabaran adalah bukti bahwa hatimu lebih besar dari masalahmu.","Hal yang paling berharga seringkali tumbuh dalam proses yang paling sulit.","Ketika semua terasa gelap, itu bukan akhir—itu tanda kamu sedang belajar melihat dengan cara yang baru.","Iman diuji bukan saat mudah, tapi saat kamu tetap bertahan tanpa kepastian.","Jangan menyerah hanya karena belum terlihat hasilnya—yang benar selalu punya waktunya.","Kasih sejati tidak mencari keuntungan, tapi memilih tetap memberi.","Memaafkan bukan tentang melupakan, tapi tentang melepaskan beban dari hatimu.","Kebaikan kecil yang tulus bisa mengubah hari seseorang.","Orang yang paling kuat adalah yang tetap memilih mengasihi meski pernah terluka.","Belajar mengerti orang lain adalah langkah awal menuju kedewasaan.","Tidak semua orang akan membalas kebaikanmu, tapi itu bukan alasan untuk berhenti berbuat baik.","Hati yang penuh kasih selalu punya ruang untuk memahami, bukan menghakimi.","Hidup bukan tentang menjadi sempurna, tapi terus menjadi lebih baik.","Setiap proses yang kamu jalani sedang membentuk siapa dirimu nanti.","Jangan takut berjalan pelan, takutlah jika berhenti bertumbuh.","Tujuan hidup bukan hanya sukses, tapi menjadi berarti.","Apa yang kamu tabur dalam diam, suatu saat akan terlihat dengan jelas.","Karakter dibentuk bukan saat dipuji, tapi saat diuji.","Hidup yang berdampak lahir dari hati yang konsisten, bukan yang instan.","Ketika kamu tetap memilih benar di saat sulit, di situlah nilai hidupmu terlihat.","Pada akhirnya, yang paling berarti bukan apa yang kamu miliki, tapi siapa kamu saat menjalaninya."];
+        
+        const defaultGradients = ["linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)","linear-gradient(135deg, #2d3436 0%, #000000 50%, #434343 100%)","linear-gradient(135deg, #232526 0%, #414345 100%)","linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)","linear-gradient(135deg, #141e30 0%, #243b55 100%)","linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)","linear-gradient(135deg, #1c1c1c 0%, #4a4a4a 100%)","linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%)","linear-gradient(135deg, #373b44 0%, #4286f4 100%)","linear-gradient(135deg, #3a1c71 0%, #d76d77 50%, #ffaf7b 100%)","linear-gradient(135deg, #11998e 0%, #38ef7d 100%)","linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)","linear-gradient(135deg, #1d2671 0%, #c33764 100%)","linear-gradient(135deg, #200122 0%, #6f0000 100%)","linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%)","linear-gradient(135deg, #1e130c 0%, #9a8478 100%)","linear-gradient(135deg, #4b6cb7 0%, #182848 100%)","linear-gradient(135deg, #360033 0%, #0b8793 100%)","linear-gradient(135deg, #2b5876 0%, #4e4376 100%)","linear-gradient(135deg, #134e5e 0%, #71b280 100%)","linear-gradient(135deg, #5d4157 0%, #a8caba 100%)","linear-gradient(135deg, #3d3393 0%, #2b76b9 50%, #2cacd1 100%)","linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)","linear-gradient(135deg, #aa076b 0%, #61045f 100%)","linear-gradient(135deg, #314755 0%, #26a0da 100%)","linear-gradient(135deg, #2b32b2 0%, #1488cc 100%)","linear-gradient(135deg, #4b134f 0%, #c94b4b 100%)","linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)","linear-gradient(135deg, #16222a 0%, #3a6073 100%)","linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)"];
+
+        function init() {
+            // Load data from localStorage (set by admin)
+            const savedQuotes = localStorage.getItem('yantoQuotes');
+            const savedGradients = localStorage.getItem('yantoGradients');
+            
+            quotes = savedQuotes ? JSON.parse(savedQuotes) : defaultQuotes;
+            gradients = savedGradients ? JSON.parse(savedGradients) : defaultGradients;
+            
+            // Calculate current day
+            const savedStartDate = localStorage.getItem('quotesStartDate');
+            if (!savedStartDate) {
+                localStorage.setItem('quotesStartDate', new Date().toDateString());
+                currentDay = 1;
+            } else {
+                const startDate = new Date(savedStartDate);
+                const today = new Date();
+                const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+                currentDay = (diffDays % quotes.length) + 1;
+                if (currentDay < 1) currentDay = 1;
+            }
+
+            createBackgrounds();
+            createParticles();
+            createDaySelector();
+            updateDisplay();
+            startMidnightChecker();
+        }
+
+        function createBackgrounds() {
+            const container = document.getElementById('bgContainer');
+            container.innerHTML = '';
+            gradients.forEach((gradient, index) => {
+                const div = document.createElement('div');
+                div.className = `bg-layer ${index === 0 ? 'active' : ''}`;
+                div.style.background = gradient;
+                container.appendChild(div);
+            });
+        }
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 40; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.width = Math.random() * 3 + 'px';
+                p.style.height = p.style.width;
+                p.style.animationDelay = Math.random() * 20 + 's';
+                p.style.animationDuration = (Math.random() * 20 + 15) + 's';
+                container.appendChild(p);
+            }
+        }
+
+        function createDaySelector() {
+            const container = document.getElementById('daySelector');
+            container.innerHTML = '';
+            for (let i = 1; i <= quotes.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = `day-dot ${i === currentDay ? 'active' : ''}`;
+                dot.onclick = () => { currentDay = i; updateDisplay(); };
+                container.appendChild(dot);
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('quoteText').textContent = quotes[currentDay - 1];
+            document.getElementById('dayIndicator').textContent = `Hari ${currentDay}`;
+            document.getElementById('dayCounter').textContent = `${currentDay} / ${quotes.length}`;
+            document.getElementById('progressBar').style.width = `${(currentDay / quotes.length) * 100}%`;
+            
+            document.querySelectorAll('.bg-layer').forEach((layer, i) => {
+                layer.classList.toggle('active', i + 1 === currentDay);
+            });
+            document.querySelectorAll('.day-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i + 1 === currentDay);
+            });
+            
+            document.getElementById('prevBtn').disabled = currentDay === 1;
+            document.getElementById('nextBtn').disabled = currentDay === quotes.length;
+        }
+
+        function changeDay(dir) {
+            const newDay = currentDay + dir;
+            if (newDay >= 1 && newDay <= quotes.length) {
+                currentDay = newDay;
+                updateDisplay();
+            }
+        }
+
+        function startMidnightChecker() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+                
+                const currentDateStr = now.toDateString();
+                if (lastDate && lastDate !== currentDateStr) {
+                    const savedStartDate = localStorage.getItem('quotesStartDate');
+                    if (savedStartDate) {
+                        const startDate = new Date(savedStartDate);
+                        const diffDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+                        const newDay = (diffDays % quotes.length) + 1;
+                        if (newDay !== currentDay && newDay >= 1 && newDay <= quotes.length) {
+                            currentDay = newDay;
+                            updateDisplay();
+                            const notif = document.getElementById('midnightNotification');
+                            notif.classList.add('show');
+                            setTimeout(() => notif.classList.remove('show'), 5000);
+                        }
+                    }
+                }
+                lastDate = currentDateStr;
+            }, 1000);
+        }
+
+        // Keyboard & Touch
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeDay(-1);
+            if (e.key === 'ArrowRight') changeDay(1);
+        });
+        
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+        document.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(diff) > 50) changeDay(diff > 0 ? 1 : -1);
+        });
+
+        init();
+    </script>
+</body>
+</html>
