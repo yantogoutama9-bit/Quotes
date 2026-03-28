@@ -427,7 +427,7 @@
         function startMidnightChecker() {
             setInterval(() => {
                 const now = new Date();
-                document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+                document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
                 
                 const currentDateStr = now.toDateString();
                 if (lastDate && lastDate !== currentDateStr) {
