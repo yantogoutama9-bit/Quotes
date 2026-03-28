@@ -1,0 +1,624 @@
+<!-- FILE 2: admin.html - Panel Admin Terpisah (Buka file ini di browser untuk edit) -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quotes by Yanto Goutama</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #2a2a40;
+        }
+
+        .section-title {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            background: #0f0f1a;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: #e0e0e0;
+            padding: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 0.9rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+            margin-top: 1rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #2a2a40;
+            color: #e0e0e0;
+        }
+        .btn-secondary:hover {
+            background: #3a3a50;
+        }
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        /* Color Generator */
+        .color-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .color-box {
+            flex: 1;
+            min-width: 150px;
+        }
+        .color-box label {
+            display: block;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 0.3rem;
+        }
+        .color-picker-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        input[type="color"] {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: none;
+        }
+        input[type="text"] {
+            flex: 1;
+            background: #0f0f1a;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .direction-btns {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        .dir-btn {
+            padding: 0.5rem 1rem;
+            background: #2a2a40;
+            border: 1px solid #3a3a50;
+            color: #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .dir-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .preview-box {
+            width: 100%;
+            height: 120px;
+            border-radius: 12px;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .preview-label {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.6);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #fff;
+        }
+
+        .code-output {
+            background: #0f0f1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #4ade80;
+            cursor: pointer;
+            position: relative;
+            word-break: break-all;
+        }
+        .code-output:hover {
+            background: #151525;
+        }
+        .copy-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #667eea;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .code-output:hover .copy-badge {
+            opacity: 1;
+        }
+
+        .presets {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .preset {
+            aspect-ratio: 1;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .preset:hover {
+            transform: scale(1.1);
+            border-color: white;
+        }
+
+        .day-assign {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+        select {
+            background: #0f0f1a;
+            border: 1px solid #333;
+            color: #e0e0e0;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-box {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a2e;
+            border-top: 1px solid #2a2a40;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        .status-good {
+            color: #10b981;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem; }
+            .presets { grid-template-columns: repeat(6, 1fr); }
+            .color-row { flex-direction: column; }
+            .status-bar { flex-direction: column; gap: 0.5rem; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Panel Admin</h1>
+        <p class="subtitle">Quotes by Yanto Goutama - Sistem Manajemen Konten</p>
+
+        <div class="info-box">
+            <strong>Cara Penggunaan:</strong><br>
+            1. Edit quotes di textarea bawah (1 baris = 1 quotes)<br>
+            2. Generate warna background menggunakan color picker<br>
+            3. Klik "Simpan ke LocalStorage" untuk menerapkan ke website utama<br>
+            4. Buka file <strong>index.html</strong> untuk melihat hasilnya
+        </div>
+
+        <!-- Quotes Editor -->
+        <div class="section">
+            <div class="section-title">📝 Editor Quotes</div>
+            <textarea id="quotesInput" placeholder="Masukkan quotes di sini...
+Satu baris = satu quotes
+Minimal 1 quotes
+Maksimal tidak terbatas"></textarea>
+            <div style="margin-top: 0.5rem; color: #666; font-size: 0.8rem;">
+                <span id="quoteCount">0 quotes</span> tersimpan
+            </div>
+            <button class="btn btn-primary" onclick="saveQuotes()">💾 Simpan Quotes</button>
+            <button class="btn btn-secondary" onclick="resetDefault()">↩️ Reset Default</button>
+            <button class="btn btn-secondary" onclick="exportData()">📤 Export JSON</button>
+            <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(this)">
+            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">📥 Import JSON</button>
+        </div>
+
+        <!-- Color Generator -->
+        <div class="section">
+            <div class="section-title">🎨 Generator Warna Background</div>
+            
+            <div class="direction-btns">
+                <button class="dir-btn active" onclick="setDirection('135deg', this)">↗️ 135°</button>
+                <button class="dir-btn" onclick="setDirection('to right', this)">→ To Right</button>
+                <button class="dir-btn" onclick="setDirection('to bottom', this)">↓ To Bottom</button>
+                <button class="dir-btn" onclick="setDirection('45deg', this)">↘️ 45°</button>
+                <button class="dir-btn" onclick="setDirection('to top', this)">↑ To Top</button>
+                <button class="dir-btn" onclick="setDirection('to left', this)">← To Left</button>
+            </div>
+
+            <div class="color-row">
+                <div class="color-box">
+                    <label>Warna 1 (Kiri/Atas)</label>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="color1" value="#1a1a2e" onchange="updateGradient()">
+                        <input type="text" id="hex1" value="#1a1a2e" onchange="updateFromHex(1)">
+                    </div>
+                </div>
+                <div class="color-box">
+                    <label>Warna 2 (Tengah)</label>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="color2" value="#16213e" onchange="updateGradient()">
+                        <input type="text" id="hex2" value="#16213e" onchange="updateFromHex(2)">
+                    </div>
+                </div>
+                <div class="color-box">
+                    <label>Warna 3 (Kanan/Bawah)</label>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="color3" value="#0f3460" onchange="updateGradient()">
+                        <input type="text" id="hex3" value="#0f3460" onchange="updateFromHex(3)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-box" id="previewBox">
+                <div class="preview-label">Preview Gradient</div>
+            </div>
+
+            <div class="code-output" id="codeOutput" onclick="copyCode()">
+                linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)
+                <span class="copy-badge">Click to Copy</span>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <label style="font-size: 0.8rem; color: #888; margin-bottom: 0.5rem; display: block;">🎨 Preset Warna Populer (Klik untuk pakai)</label>
+                <div class="presets" id="presets"></div>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #2a2a40;">
+                <label style="font-size: 0.8rem; color: #888; margin-bottom: 0.5rem; display: block;">📅 Pasangkan ke Hari Tertentu</label>
+                <div class="day-assign">
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; color: #666; margin-bottom: 0.3rem;">Pilih Hari</label>
+                        <select id="daySelect"></select>
+                    </div>
+                    <button class="btn btn-success" onclick="assignToDay()">✓ Pasang ke Hari Ini</button>
+                    <button class="btn btn-secondary" onclick="applyToAll()">🌈 Pasang ke Semua Hari</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Gradients List -->
+        <div class="section">
+            <div class="section-title">🖼️ Daftar Background per Hari</div>
+            <div id="gradientsList" style="display: grid; gap: 0.5rem;"></div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div>
+            <span id="statusText">Siap mengedit</span>
+        </div>
+        <div class="status-good">
+            ✓ Data tersimpan di LocalStorage browser ini
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const defaultQuotes = ["Perubahan besar selalu dimulai dari hati yang mau jujur pada dirinya sendiri.","Tidak semua yang benar itu nyaman, tapi semua yang benar selalu membawa damai.","Kekuatan sejati terlihat saat seseorang memilih tetap lembut di tengah kerasnya hidup.","Hidup bukan soal siapa yang paling cepat, tapi siapa yang tetap setia di jalannya.","Hati yang bersih lebih berharga daripada citra yang terlihat sempurna.","Kesalahan tidak menghancurkan hidupmu—yang menghancurkan adalah menolak untuk berubah.","Damai bukan datang dari keadaan yang tenang, tapi dari hati yang tertata.","Percaya bukan berarti melihat jalan, tapi tetap melangkah meski belum jelas.","Orang yang kuat bukan yang tidak pernah jatuh, tapi yang selalu bangkit dengan arah yang benar.","Kesabaran adalah bukti bahwa hatimu lebih besar dari masalahmu.","Hal yang paling berharga seringkali tumbuh dalam proses yang paling sulit.","Ketika semua terasa gelap, itu bukan akhir—itu tanda kamu sedang belajar melihat dengan cara yang baru.","Iman diuji bukan saat mudah, tapi saat kamu tetap bertahan tanpa kepastian.","Jangan menyerah hanya karena belum terlihat hasilnya—yang benar selalu punya waktunya.","Kasih sejati tidak mencari keuntungan, tapi memilih tetap memberi.","Memaafkan bukan tentang melupakan, tapi tentang melepaskan beban dari hatimu.","Kebaikan kecil yang tulus bisa mengubah hari seseorang.","Orang yang paling kuat adalah yang tetap memilih mengasihi meski pernah terluka.","Belajar mengerti orang lain adalah langkah awal menuju kedewasaan.","Tidak semua orang akan membalas kebaikanmu, tapi itu bukan alasan untuk berhenti berbuat baik.","Hati yang penuh kasih selalu punya ruang untuk memahami, bukan menghakimi.","Hidup bukan tentang menjadi sempurna, tapi terus menjadi lebih baik.","Setiap proses yang kamu jalani sedang membentuk siapa dirimu nanti.","Jangan takut berjalan pelan, takutlah jika berhenti bertumbuh.","Tujuan hidup bukan hanya sukses, tapi menjadi berarti.","Apa yang kamu tabur dalam diam, suatu saat akan terlihat dengan jelas.","Karakter dibentuk bukan saat dipuji, tapi saat diuji.","Hidup yang berdampak lahir dari hati yang konsisten, bukan yang instan.","Ketika kamu tetap memilih benar di saat sulit, di situlah nilai hidupmu terlihat.","Pada akhirnya, yang paling berarti bukan apa yang kamu miliki, tapi siapa kamu saat menjalaninya."];
+        
+        const defaultGradients = ["linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)","linear-gradient(135deg, #2d3436 0%, #000000 50%, #434343 100%)","linear-gradient(135deg, #232526 0%, #414345 100%)","linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)","linear-gradient(135deg, #141e30 0%, #243b55 100%)","linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)","linear-gradient(135deg, #1c1c1c 0%, #4a4a4a 100%)","linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%)","linear-gradient(135deg, #373b44 0%, #4286f4 100%)","linear-gradient(135deg, #3a1c71 0%, #d76d77 50%, #ffaf7b 100%)","linear-gradient(135deg, #11998e 0%, #38ef7d 100%)","linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)","linear-gradient(135deg, #1d2671 0%, #c33764 100%)","linear-gradient(135deg, #200122 0%, #6f0000 100%)","linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%)","linear-gradient(135deg, #1e130c 0%, #9a8478 100%)","linear-gradient(135deg, #4b6cb7 0%, #182848 100%)","linear-gradient(135deg, #360033 0%, #0b8793 100%)","linear-gradient(135deg, #2b5876 0%, #4e4376 100%)","linear-gradient(135deg, #134e5e 0%, #71b280 100%)","linear-gradient(135deg, #5d4157 0%, #a8caba 100%)","linear-gradient(135deg, #3d3393 0%, #2b76b9 50%, #2cacd1 100%)","linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)","linear-gradient(135deg, #aa076b 0%, #61045f 100%)","linear-gradient(135deg, #314755 0%, #26a0da 100%)","linear-gradient(135deg, #2b32b2 0%, #1488cc 100%)","linear-gradient(135deg, #4b134f 0%, #c94b4b 100%)","linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)","linear-gradient(135deg, #16222a 0%, #3a6073 100%)","linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)"];
+
+        const presetColors = [
+            '#1a1a2e', '#16213e', '#0f3460', '#1e3c72', '#2a5298',
+            '#2d3436', '#000000', '#434343', '#232526', '#414345',
+            '#0f2027', '#203a43', '#2c5364', '#141e30', '#243b55',
+            '#3a1c71', '#d76d77', '#ffaf7b', '#f093fb', '#f5576c',
+            '#11998e', '#38ef7d', '#0f0c29', '#302b63', '#24243e',
+            '#1d2671', '#c33764', '#200122', '#6f0000', '#833ab4',
+            '#fd1d1d', '#fcb045', '#1e130c', '#9a8478', '#4b6cb7',
+            '#182848', '#360033', '#0b8793', '#2b5876', '#4e4376',
+            '#134e5e', '#71b280', '#5d4157', '#a8caba', '#3d3393',
+            '#2b76b9', '#2cacd1', '#1a2980', '#26d0ce', '#aa076b',
+            '#61045f', '#314755', '#26a0da', '#2b32b2', '#1488cc',
+            '#4b134f', '#c94b4b', '#16222a', '#3a6073', '#0f0c29'
+        ];
+
+        let quotes = [];
+        let gradients = [];
+        let currentDirection = '135deg';
+
+        function init() {
+            // Load data
+            const savedQuotes = localStorage.getItem('yantoQuotes');
+            const savedGradients = localStorage.getItem('yantoGradients');
+            
+            quotes = savedQuotes ? JSON.parse(savedQuotes) : [...defaultQuotes];
+            gradients = savedGradients ? JSON.parse(savedGradients) : [...defaultGradients];
+            
+            // Ensure gradients match quotes length
+            syncGradientsLength();
+            
+            // Populate UI
+            document.getElementById('quotesInput').value = quotes.join('\n');
+            updateQuoteCount();
+            initDaySelect();
+            updateGradientsList();
+            updateGradient();
+            initPresets();
+        }
+
+        function syncGradientsLength() {
+            while (gradients.length < quotes.length) {
+                gradients.push(defaultGradients[gradients.length % defaultGradients.length]);
+            }
+            if (gradients.length > quotes.length) {
+                gradients = gradients.slice(0, quotes.length);
+            }
+        }
+
+        function updateQuoteCount() {
+            document.getElementById('quoteCount').textContent = `${quotes.length} quotes`;
+        }
+
+        function initDaySelect() {
+            const select = document.getElementById('daySelect');
+            select.innerHTML = '';
+            for (let i = 1; i <= quotes.length; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Hari ${i}`;
+                select.appendChild(option);
+            }
+        }
+
+        function updateGradientsList() {
+            const container = document.getElementById('gradientsList');
+            container.innerHTML = '';
+            gradients.forEach((grad, i) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'display:flex;align-items:center;gap:1rem;padding:0.5rem;background:#0f0f1a;border-radius:8px;';
+                row.innerHTML = `
+                    <div style="width:40px;height:40px;border-radius:6px;background:${grad};flex-shrink:0;"></div>
+                    <div style="flex:1;font-size:0.8rem;color:#888;font-family:monospace;overflow:hidden;text-overflow:ellipsis;">${grad}</div>
+                    <div style="font-size:0.75rem;color:#666;flex-shrink:0;">Hari ${i+1}</div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function saveQuotes() {
+            const text = document.getElementById('quotesInput').value;
+            const newQuotes = text.split('\n').filter(q => q.trim() !== '');
+            
+            if (newQuotes.length === 0) {
+                alert('Minimal harus ada 1 quotes!');
+                return;
+            }
+            
+            quotes = newQuotes;
+            syncGradientsLength();
+            
+            localStorage.setItem('yantoQuotes', JSON.stringify(quotes));
+            localStorage.setItem('yantoGradients', JSON.stringify(gradients));
+            
+            updateQuoteCount();
+            initDaySelect();
+            updateGradientsList();
+            
+            document.getElementById('statusText').textContent = `✓ Tersimpan: ${quotes.length} quotes, ${gradients.length} background`;
+            document.getElementById('statusText').style.color = '#10b981';
+        }
+
+        function resetDefault() {
+            if (!confirm('Yakin reset ke default? Data saat ini akan hilang.')) return;
+            quotes = [...defaultQuotes];
+            gradients = [...defaultGradients];
+            document.getElementById('quotesInput').value = quotes.join('\n');
+            saveQuotes();
+        }
+
+        function exportData() {
+            const data = { quotes, gradients, exportedAt: new Date().toISOString() };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `yanto-quotes-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.quotes && data.gradients) {
+                        quotes = data.quotes;
+                        gradients = data.gradients;
+                        document.getElementById('quotesInput').value = quotes.join('\n');
+                        saveQuotes();
+                        alert(`Import sukses! ${quotes.length} quotes, ${gradients.length} background.`);
+                    }
+                } catch (err) {
+                    alert('File tidak valid!');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Color Generator
+        function initPresets() {
+            const container = document.getElementById('presets');
+            presetColors.forEach(color => {
+                const div = document.createElement('div');
+                div.className = 'preset';
+                div.style.background = color;
+                div.onclick = () => applyPreset(color);
+                container.appendChild(div);
+            });
+        }
+
+        function applyPreset(color) {
+            // Shift: 3->2, 2->1, 1->new
+            document.getElementById('color3').value = document.getElementById('color2').value;
+            document.getElementById('color2').value = document.getElementById('color1').value;
+            document.getElementById('color1').value = color;
+            updateGradient();
+        }
+
+        function setDirection(dir, btn) {
+            currentDirection = dir;
+            document.querySelectorAll('.dir-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            updateGradient();
+        }
+
+        function updateGradient() {
+            const c1 = document.getElementById('color1').value;
+            const c2 = document.getElementById('color2').value;
+            const c3 = document.getElementById('color3').value;
+            
+            document.getElementById('hex1').value = c1;
+            document.getElementById('hex2').value = c2;
+            document.getElementById('hex3').value = c3;
+            
+            const gradient = `linear-gradient(${currentDirection}, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
+            document.getElementById('previewBox').style.background = gradient;
+            document.getElementById('codeOutput').innerHTML = `${gradient}<span class="copy-badge">Click to Copy</span>`;
+        }
+
+        function updateFromHex(num) {
+            const hex = document.getElementById(`hex${num}`).value;
+            if (/^#[0-9A-F]{6}$/i.test(hex)) {
+                document.getElementById(`color${num}`).value = hex;
+                updateGradient();
+            }
+        }
+
+        function copyCode() {
+            const code = document.getElementById('codeOutput').childNodes[0].textContent.trim();
+            navigator.clipboard.writeText(code);
+            const badge = document.querySelector('.copy-badge');
+            badge.textContent = 'Copied!';
+            badge.style.opacity = '1';
+            setTimeout(() => {
+                badge.textContent = 'Click to Copy';
+                badge.style.opacity = '';
+            }, 2000);
+        }
+
+        function assignToDay() {
+            const day = parseInt(document.getElementById('daySelect').value);
+            const code = document.getElementById('codeOutput').childNodes[0].textContent.trim();
+            gradients[day - 1] = code;
+            saveQuotes();
+            updateGradientsList();
+            alert(`Background hari ${day} diperbarui!`);
+        }
+
+        function applyToAll() {
+            if (!confirm('Yakin terapkan warna ini ke SEMUA hari?')) return;
+            const code = document.getElementById('codeOutput').childNodes[0].textContent.trim();
+            for (let i = 0; i < gradients.length; i++) {
+                gradients[i] = code;
+            }
+            saveQuotes();
+            updateGradientsList();
+            alert('Semua hari menggunakan background yang sama sekarang!');
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
